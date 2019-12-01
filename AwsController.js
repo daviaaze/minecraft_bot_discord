@@ -1,24 +1,20 @@
 const AWS = require('aws-sdk');
 const Rcon = require('modern-rcon');
-
+const rcon = new Rcon('minecraft.daviaaze.com', 25575,'cnt7275')
 instance = { InstanceIds: ["i-0fb3b670f8e6e71cd"]};
 Route53 = new AWS.Route53();
 ec2 = new AWS.EC2();
 module.exports = {
-  status() {
-    ec2.describeInstanceStatus(instance, function(err, data) {
-      if (err) console.log(err, err.stack);
-      else console.log(data); //InstanceState
+  status(message) {
+    ec2.describeInstances(instance,(err,data) => {
+      message.channel.send(`Server is: ${data.Reservations[0].Instances[0].State.Name}`);
     });
   },
   start(){
-    ec2.startInstances(instance, function(err, data) {
-      if (err) console.log(err, err.stack); // an error occurred
-      else     console.log(data);
-     });
+    ec2.startInstances(instance);
     setTimeout(() => {
       ec2.describeInstances(instance, function(err, data) {
-        if (err) console.log(err, err.stack); // an error occurred
+        if (err) console.log('Error',err); // an error occurred
         else  var Ec2ip = data.Reservations[0].Instances[0].PublicIpAddress;           // successful response
         var params = {
         ChangeBatch: {
@@ -49,13 +45,12 @@ module.exports = {
     }, 10000);
   },
   stop(){
-    const rcon = new Rcon('minecraft.daviaaze.com', 25575,'cnt7275')
     rcon.connect().then(() => {
       rcon.send('stop');
-    }).then(() => {rcon.disconnect();});
+    }).then(() => {rcon.disconnect();
     setTimeout(ec2.stopInstances(instance, function(err, data) {
       if (err) console.log(err, err.stack); // an error occurred
       else     console.log(data);
-     }), 2000);
-  }
+     }), 2000);});
+  },
 }

@@ -31,6 +31,9 @@ client.on("ready", () => {
       const msg = await message.channel.send(`Pinging...`);
       msg.edit(`Pong\nLatency is ${Math.floor(msg.createdAt - message.createdAt)}ms\n Api Latency ${Math.round(client.ping)}ms`)
     }
+    if(cmd === "status"){
+      AwsController.status(message);
+    }
     if(cmd === "start"){
       AwsController.start();
       return message.channel.send("Server is starting");
