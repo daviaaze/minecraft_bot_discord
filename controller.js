@@ -35,11 +35,17 @@ client.on("ready", () => {
       AwsController.status(message);
     }
     if(cmd === "start"){
-      AwsController.start();
+      AwsController.startInstance();
+      setTimeout(() => {
+        AwsController.changeInstanceIp();
+      }, 10000); 
       return message.channel.send("Server is starting");
     }
     if(cmd === "stop"){
-      AwsController.stop();
+      AwsController.stopMcServer();
+      setTimeout(() => {
+        AwsController.stopIstance();
+      }, 2000);
       return message.channel.send("Server is stopping");
     }
     if(cmd === "ip"){
