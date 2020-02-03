@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk');
 const Rcon = require('modern-rcon');
 require('dotenv').config();
-const rcon = new Rcon(`${process.env.rconIp}`, process.env.rconPort,`${process.env.rconPass}`);
+const rcon = new Rcon(`${process.env.rconIp}`, 25575,`${process.env.rconPass}`);
 instance = { InstanceIds: [process.env.InstanceId]};
 Route53 = new AWS.Route53();
 ec2 = new AWS.EC2();
@@ -58,8 +58,10 @@ module.exports = {
     });
   },
   stopMcServer(){
-    rcon.connect().then(() => {
-      rcon.send('stop');
-    }).then(() => {rcon.disconnect();});
+    rcon.connect()
+      .then(() => {rcon.send('stop');})
+        .then(() => {rcon.disconnect();})
+        .catch((err) => console.log(err))
+      .catch((err) => {return err})
   },
 }
