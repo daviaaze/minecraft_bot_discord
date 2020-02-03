@@ -45,7 +45,7 @@ client.on("ready", () => {
       AwsController.stopMcServer();
       setTimeout(() => {
         AwsController.stopIstance();
-      }, 2000);
+      }, 30000);
       return message.channel.send("Server is stopping");
     }
     if(cmd === "ip"){
